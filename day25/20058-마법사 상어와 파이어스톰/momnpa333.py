@@ -57,6 +57,7 @@ for l in L:
                 subitem=[]    
         newrow=[]
         for row in zip(*subary):
+            print(row)
             for r in row:
                 newrow+=r
             newary.append(newrow)
