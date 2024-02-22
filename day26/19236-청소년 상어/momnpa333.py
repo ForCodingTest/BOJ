@@ -33,9 +33,6 @@ sea=[[[] for _ in range(4)] for _ in range(4)]
 dirary=[(-1,0),(-1,-1),(0,-1),(1,-1),(1,0),(1,1),(0,1),(-1,1)]
 fishary={i+1:False for i in range(16)}
 def moveFish(ary,fish,sharkposi):
-    ary=copy.deepcopy(ary)
-    fish=copy.deepcopy(fish)
-
     for i in fish:
         if fish[i]!=False:
             r=fish[i][0]; c=fish[i][1]; dir=fish[i][2]
@@ -72,7 +69,6 @@ dq.append([0,0,dir,newAry,newFish,point])
 while dq:
     for _ in range(len(dq)):
         sharkR,sharkC,sharkDir,ary,fish,P=dq.popleft()
-        R=sharkR
         for i in range(1,5):
             if 0<=sharkR+dirary[sharkDir][0]*i<4 and 0<=sharkC+dirary[sharkDir][1]*i<4:
                 R=sharkR+dirary[sharkDir][0]*i;C=sharkC+dirary[sharkDir][1]*i
