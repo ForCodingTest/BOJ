@@ -35,7 +35,7 @@ for i in range(E):
     else:
         graph[go][end]=dist
 
-# print(graph)
+print(graph)
 
 # print(dijkstra(graph, start,V))
 for v in dijkstra(graph, start,V):
