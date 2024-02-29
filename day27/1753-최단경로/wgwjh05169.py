@@ -1,4 +1,5 @@
 import sys
+import heapq
 
 
 def get_input():
@@ -15,60 +16,40 @@ def get_input():
 
 inf = float('inf')
 def solution(V, E, k, edges):
-    adj_list = [[] for _ in range(V)]
+    adj_list = [dict() for _ in range(V)]
     for u, v, w in edges:
         u -= 1
         v -= 1
-        adj_list[u].append((v, w))
+        if adj_list[u].get(v):
+            if w < adj_list[u][v]:
+                adj_list[u][v] = w
+        else:
+            adj_list[u][v] = w
 
-    dist_to = dijkstra(adj_list, k-1, V)
+    dist_to = map(lambda x: 'INF' if x == inf else x, dijkstra(adj_list, k-1, V))
     print(*dist_to, sep='\n')
 
 
 def dijkstra(adj_list, k, V):
-    dist_to = []
-    for i in range(V):
-        dist_to.append(get_dist(adj_list, k, i))
+    heap = []
+    dist_to = [inf] * V
+    for v in range(V):
+        if v == k:
+            dist_to[k] = 0
+            heapq.heappush(heap, (0, k))
+        elif adj_list[k].get(v):
+            dist_to[v] = adj_list[k][v]
+            heapq.heappush(heap, (adj_list[k][v], v))
 
-    minimum = inf
-    mi = None
-    for i in range(V):
-        if dist_to[i] < minimum:
-            minimum = dist_to[i]
-            mi = i
-
-    for _ in range(V):
-        flag = True
-        for j in range(V):
-            d = dist_to[mi] + get_dist(adj_list, mi, j)
-            if d < dist_to[j]:
-                dist_to[j] = d
-                flag = False
-
-            if dist_to[j] < minimum:
-                minimum = dist_to[j]
-                mi = j
-
-        if flag:
-            break
-
-    dist_to[k] = 0
+    while heap:
+        _, u = heapq.heappop(heap)
+        for v in adj_list[u].keys():
+            new_dist = dist_to[u] + adj_list[u][v]
+            if new_dist < dist_to[v]:
+                dist_to[v] = new_dist
+                heapq.heappush(heap, (new_dist, v))
 
     return dist_to
 
 
-def get_dist(adj_list, u, v):
-    for vertax in adj_list[u]:
-        if vertax[0] == v:
-            return vertax[1]
-
-    return inf
-
-
 solution(*get_input())
-
-
-# 8:43 메모리초과
-# 8:49 인접리스트로 수정 - 시간초과
-# 8:54 find_min()을 dist_to update 과정과 합침 - 2% 시간초과
-# 9:02 dist_to 업데이트 후 변화가 없으면 break - 2% 틀
